@@ -31,18 +31,20 @@ class VFEmbedder(nn.Module):
 
 class VFDDPM():
     def __init__(self,
-                unet_dict =  { 'sample_size':128,
-                               'in_channels':1,
-                               'out_channels':1,
-                               'encoder_hid_dim': 768,
-                               'cross_attention_dim' : 1,
-                               'layers_per_block': 1,
-                               'block_out_channels': (64, 128, 256, 512),
-                             }
+        unet_dict =  { 'sample_size':128,
+                       'in_channels':1,
+                       'out_channels':1,
+                       'time_embedding_dim': 512,
+                       'encoder_hid_dim': 768,
+                       'cross_attention_dim' : 1,
+                       'layers_per_block': 1,
+                       'block_out_channels':  (128, 256, 512, 512),
+                     }
                 ):
 
         
         self.unet_dict = unet_dict
+        self.unet_dict['time_embedding_dim'] = unet_dict['block_out_channels'][-1]
         
         emb_shape = (int(unet_dict['cross_attention_dim']), int(unet_dict['encoder_hid_dim']))
         self.vf_embedder = VFEmbedder(shape=emb_shape)
@@ -75,7 +77,8 @@ class VFDDPM():
                seed = 0,
                eval_cond =  0.5
              ):
-
+        
+        # fix random seed
         torch.manual_seed(seed)
         random.seed(seed)
         
