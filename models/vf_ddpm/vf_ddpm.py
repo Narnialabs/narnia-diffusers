@@ -34,11 +34,11 @@ class VFDDPM():
         unet_dict =  { 'sample_size':128,
                        'in_channels':1,
                        'out_channels':1,
-                       'time_embedding_dim': 512,
+                       'time_embedding_dim': 1024,
                        'encoder_hid_dim': 768,
                        'cross_attention_dim' : 1,
                        'layers_per_block': 1,
-                       'block_out_channels':  (128, 256, 512, 512),
+                       'block_out_channels':  (64, 128, 256, 512),
                      }
                 ):
 
@@ -135,6 +135,7 @@ class VFDDPM():
 
             for step, batch in enumerate(dataset):
                 imgs, vfs = batch
+                print(
                 noise = torch.randn(imgs.shape).to(imgs.device)
                 timesteps = torch.randint(
                     0, self.noise_scheduler.config.num_train_timesteps,
